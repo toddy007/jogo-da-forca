@@ -1,9 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
+#include <string.h>
+#include "palavras.h"
 
-char palavra[] = "casa"; // não use acento e nem uppercase
-int tamanho = sizeof(palavra) - 1;
+char *palavra;
+int tamanho;
 char letras_chutadas[26] = {0};
 int acertos = 0;
 int erros = 0;
@@ -64,7 +68,16 @@ void desenhar_forca(void) {
     char *perna1 = erros >= 5 ? "/" : "";
     char *perna2 = erros >= 6 ? "\\" : "";
     
-    printf("_________\n");
+    int length = sizeof(letras_chutadas) / sizeof(letras_chutadas[0]);
+    for (int i = 0; i < tamanho; i++) {
+        if (includes(letras_chutadas, palavra[i], length)) {
+            printf(" %c ", palavra[i]);
+        } else {
+            printf(" _ ");
+        }
+    }
+
+    printf("\n_________\n");
     printf("|/      |\n");
     printf("|      %s\n", cabeca);
     printf("|      %s%s%s\n", braco1, corpo, braco2);
@@ -108,6 +121,11 @@ bool perdeu(void) {
 }
 
 int main(void) {
+    srand(time(NULL));
+    int index = rand() % tamanho_palavras;
+    palavra = palavras[index];
+    tamanho = strlen(palavra);
+
     do {
         desenhar_forca();
 
